@@ -45,7 +45,7 @@ router.post("/", (req, res) => {
 
 	// validate
 	if (
-		!newAction.project_id ||
+		!newAction.id ||
 		!newAction.description ||
 		newAction.description.length === 0
 	) {
@@ -79,8 +79,33 @@ router.delete("/:id", (req, res) => {
 			});
 		})
 		.catch(err => {
-			res.status(500).json({ error: "project could not be found and deleted" });
+			res.status(500).json({ error: "action could not be found and deleted" });
 		});
+});
+
+// PUT: update an action by id
+router.put("/:id", (req, res) => {
+	const { id } = req.params;
+	const update = req.body;
+	// validate
+	if (!update.id || !update.description || update.description.length === 0) {
+		res
+			.status(400)
+			.json({ message: "please provide an action id and description" });
+	} else {
+		actionDB
+			.get(id)
+			.then(action => {
+				actionDB.update(id, update).then(count => {
+					res.status(200).json(update);
+				});
+			})
+			.catch(err => {
+				res
+					.status(500)
+					.json({ error: "action could not be found and updated" });
+			});
+	}
 });
 
 module.exports = router;
