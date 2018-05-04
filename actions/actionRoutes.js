@@ -40,18 +40,21 @@ router.get("/:id", (req, res) => {
 
 // POST: add a action to the list of project
 // NOTE: newActions won't get inserted......
+// SOLUTION: database requires notes but README.md does not say it is required
 router.post("/", (req, res) => {
 	const newAction = req.body;
-	console.log(newAction);
+
 	// validate
 	if (
 		!newAction.project_id ||
 		!newAction.description ||
+		!newAction.notes ||
+		!newAction.notes.length ||
 		newAction.description.length === 0
 	) {
 		res
 			.status(400)
-			.json({ message: "please provide a project id and description" });
+			.json({ message: "please provide a project id, description, and notes" });
 	} else {
 		actionDB
 			.insert(newAction)
