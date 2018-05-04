@@ -37,4 +37,31 @@ router.get("/:id", (req, res) => {
 		});
 });
 
+// POST: add a project to the list of project
+router.post("/", (req, res) => {
+	const newProject = req.body;
+	// validate
+	if (
+		!newProject.name ||
+		!newProject.description ||
+		newProject.name.length === 0 ||
+		newProject.description.length === 0
+	) {
+		res.status(400).json({
+			error: "Please provide a project name and description."
+		});
+	} else {
+		projectDB
+			.insert(newProject)
+			.then(project => {
+				res.status(201).json(project);
+			})
+			.catch(err => {
+				res.status(500).json({
+					error: "There was an error saving the project to the database."
+				});
+			});
+	}
+});
+
 module.exports = router;
