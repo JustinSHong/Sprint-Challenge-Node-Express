@@ -23,6 +23,29 @@ router.get("/", (req, res) => {
 		});
 });
 
+// GETPROJECTACTIONS: get a list of actions for a project
+router.get("/projectActions/:id", (req, res) => {
+	const { id } = req.params;
+
+	projectDB
+		.get(id)
+		.then(project => {
+			projectDB.getProjectActions(id).then(actions => {
+				if (actions.length === 0) {
+					res.status(404).json({ message: "project has not actions!" });
+				} else {
+					res.status(200).json(actions);
+				}
+			});
+		})
+		.catch(err => {
+			res.status(500).json({
+				error:
+					"there was a problem retrieving the list of actions for this project"
+			});
+		});
+});
+
 // GET: project by id
 router.get("/:id", (req, res) => {
 	const { id } = req.params;
