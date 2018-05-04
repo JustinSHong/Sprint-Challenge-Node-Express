@@ -42,16 +42,16 @@ router.get("/:id", (req, res) => {
 // NOTE: newActions won't get inserted......
 router.post("/", (req, res) => {
 	const newAction = req.body;
-
+	console.log(newAction);
 	// validate
 	if (
-		!newAction.id ||
+		!newAction.project_id ||
 		!newAction.description ||
 		newAction.description.length === 0
 	) {
 		res
 			.status(400)
-			.json({ message: "please provide an action name and description" });
+			.json({ message: "please provide a project id and description" });
 	} else {
 		actionDB
 			.insert(newAction)
