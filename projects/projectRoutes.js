@@ -81,4 +81,34 @@ router.delete("/:id", (req, res) => {
 		});
 });
 
+// PUT: update a project by id
+router.put("/:id", (req, res) => {
+	const { id } = req.params;
+	const update = req.body;
+	// validate
+	if (
+		!update.name ||
+		!update.description ||
+		update.name.length === 0 ||
+		update.description.length === 0
+	) {
+		res
+			.status(400)
+			.json({ message: "please provide a project name and description" });
+	} else {
+		projectDB
+			.get(id)
+			.then(user => {
+				projectDB.update(id, update).then(count => {
+					res.status(200).json(update);
+				});
+			})
+			.catch(err => {
+				res
+					.status(500)
+					.json({ error: "project could not be found and updated" });
+			});
+	}
+});
+
 module.exports = router;
