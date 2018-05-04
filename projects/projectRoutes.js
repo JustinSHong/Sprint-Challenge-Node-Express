@@ -64,4 +64,21 @@ router.post("/", (req, res) => {
 	}
 });
 
+// DELETE: remove a project from the list
+router.delete("/:id", (req, res) => {
+	const { id } = req.params;
+
+	projectDB
+		.get(id)
+		.then(project => {
+			let projectToBeDeleted = project;
+			projectDB.remove(id).then(count => {
+				res.status(200).json(projectToBeDeleted);
+			});
+		})
+		.catch(err => {
+			res.status(500).json({ error: "project could not be found and deleted" });
+		});
+});
+
 module.exports = router;
