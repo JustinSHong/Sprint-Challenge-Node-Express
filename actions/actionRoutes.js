@@ -38,4 +38,49 @@ router.get("/:id", (req, res) => {
 		});
 });
 
+// POST: add a action to the list of project
+// NOTE: newActions won't get inserted......
+router.post("/", (req, res) => {
+	const newAction = req.body;
+
+	// validate
+	if (
+		!newAction.project_id ||
+		!newAction.description ||
+		newAction.description.length === 0
+	) {
+		res
+			.status(400)
+			.json({ message: "please provide an action name and description" });
+	} else {
+		actionDB
+			.insert(newAction)
+			.then(action => {
+				res.status(201).json(action);
+			})
+			.catch(err => {
+				res.status(500).json({
+					error: "there was an error saving the action to the database"
+				});
+			});
+	}
+});
+
+// DELETE: remove an action from the list
+router.delete("/:id", (req, res) => {
+	const { id } = req.params;
+
+	actionDB
+		.get(id)
+		.then(action => {
+			let actionToBeDeleted = action;
+			actionDB.remove(id).then(count => {
+				res.status(200).json(actionToBeDeleted);
+			});
+		})
+		.catch(err => {
+			res.status(500).json({ error: "project could not be found and deleted" });
+		});
+});
+
 module.exports = router;
